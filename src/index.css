@@ -1,0 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Georgia", Cambria, "Times New Roman", Times, serif;
+  
+  --color-brand-bg: #F5F7FA;
+  --color-brand-text: #333333;
+  --color-brand-border: #E2E8F0;
+  
+  --color-brand-navy: #002B6B;
+  --color-brand-darknavy: #001A4D;
+  --color-brand-royal: #0A4DBF;
+  --color-brand-gold: #D4A44A;
+}
+
+/* Custom Base Overrides to fit Corporate Navy Theme perfectly */
+body {
+  background-color: #F5F7FA;
+  color: #333333;
+}
+
+/* Base style resets to guarantee theme application and corporate aesthetic */
+.theme-card {
+  background-color: #ffffff;
+  border: 1px solid #E2E8F0;
+  color: #333333;
+}
+
+.theme-card-dark {
+  background-color: #002B6B;
+  color: #FFFFFF;
+}
+
+.theme-button {
+  border: 1px solid #002B6B;
+  text-transform: uppercase;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: #FFFFFF;
+}
+
+.theme-button-filled {
+  background-color: #002B6B;
+  color: #FFFFFF;
+  text-transform: uppercase;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+}
+
+.font-serif-georgia {
+  font-family: "Georgia", Cambria, "Times New Roman", Times, serif;
+}

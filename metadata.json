@@ -1,0 +1,6 @@
+{
+  "name": "Travis Group",
+  "description": "Diversified South African company providing professional solutions across Engineering, Digital Marketing, and Event Decoration.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
