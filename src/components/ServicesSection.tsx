@@ -25,7 +25,7 @@ export default function ServicesSection({ setActiveSection, openQuoteModal }: Se
         { label: 'Maintenance Programs', items: ['Warehouse maintenance', 'Preventative structural programs', 'Industrial plant repair works'] },
       ],
       icon: Hammer,
-      btnText: 'Open Engineering Hub & Sizing Calculator',
+      btnText: 'Open Engineering Hub',
     },
     {
       id: 'digital',
@@ -38,7 +38,7 @@ export default function ServicesSection({ setActiveSection, openQuoteModal }: Se
         { label: 'Google Workspace Setup', items: ['Professional business emails configuration', 'Identity settings setup', 'Secure cloud storage collaboration'] },
       ],
       icon: Cpu,
-      btnText: 'Open Digital Hub & ROI Estimator',
+      btnText: 'Open Digital Hub',
     },
     {
       id: 'deco',
@@ -51,7 +51,7 @@ export default function ServicesSection({ setActiveSection, openQuoteModal }: Se
         { label: 'Corporate Event Styling', items: ['Conferences setups', 'Product launch brand backdrops', 'Aesthetic business galas'] },
       ],
       icon: Sparkles,
-      btnText: 'Open Deco Hub & Sizing Planner',
+      btnText: 'Open Deco Hub',
     },
   ];
 
@@ -71,7 +71,7 @@ export default function ServicesSection({ setActiveSection, openQuoteModal }: Se
           Our Services Offered
         </h2>
         <p className="font-sans text-sm text-gray-600 leading-relaxed max-w-2xl mx-auto select-none">
-          Travis Group bridges engineering ruggedness, software/marketing intelligence, and decorative layout design. Choose any specialized division below to learn more and calculate immediate project margins.
+          Travis Group bridges engineering ruggedness, software/marketing intelligence, and decorative layout design. Choose any specialized division below to learn more about our tailored solutions.
         </p>
       </section>
 

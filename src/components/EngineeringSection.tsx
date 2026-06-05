@@ -3,9 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState } from 'react';
 import { motion } from 'motion/react';
-import { Hammer, Ruler, Lightbulb, Ship, Tractor, Factory, Warehouse, Home, CreditCard, ChevronRight, Calculator, FileSpreadsheet } from 'lucide-react';
+import { Hammer, Warehouse, Factory, Home, Tractor, CreditCard, ChevronRight } from 'lucide-react';
 import { ActiveSection } from '../types';
 
 interface EngineeringSectionProps {
@@ -15,81 +14,6 @@ interface EngineeringSectionProps {
 }
 
 export default function EngineeringSection({ setActiveSection, setContactPrefill, openQuoteModal }: EngineeringSectionProps) {
-  // Sizing Estimator state
-  const [structureType, setStructureType] = useState<'carport_premium' | 'carport_standard' | 'balustrades' | 'staircase' | 'warehouse_mesh'>('carport_premium');
-  const [lengthMetres, setLengthMetres] = useState<number>(6);
-  const [widthMetres, setWidthMetres] = useState<number>(3);
-  const [steelGrade, setSteelGrade] = useState<'standard' | 'galvanized' | 'stainless_304'>('galvanized');
-  const [needsInstallation, setNeedsInstallation] = useState<boolean>(true);
-
-  // Estimator logic in South African Rands (ZAR)
-  const calculateEstimate = () => {
-    let basePricePerSqm = 1200; // Base standard carport ZAR/sqm
-    let structureLabel = 'Premium Tensile Carport';
-
-    if (structureType === 'carport_premium') {
-      basePricePerSqm = 1850;
-      structureLabel = 'Premium Tensile Membrane Carport';
-    } else if (structureType === 'carport_standard') {
-      basePricePerSqm = 1100;
-      structureLabel = 'Standard Sheet Metal Carport';
-    } else if (structureType === 'balustrades') {
-      basePricePerSqm = 2400; // rate per meter actually
-      structureLabel = 'Heavy-duty Steel Balustrades';
-    } else if (structureType === 'staircase') {
-      basePricePerSqm = 5500; // rate per flight step/meter
-      structureLabel = 'Industrial Steel Staircase Frame';
-    } else if (structureType === 'warehouse_mesh') {
-      basePricePerSqm = 950;
-      structureLabel = 'Warehouse Steel Fencing Mesh Partition';
-    }
-
-    const area = structureType === 'balustrades' || structureType === 'staircase' ? lengthMetres : lengthMetres * widthMetres;
-    let materialSurcharge = 1.0;
-    if (steelGrade === 'galvanized') materialSurcharge = 1.25;
-    if (steelGrade === 'stainless_304') materialSurcharge = 2.1;
-
-    let subtotal = area * basePricePerSqm * materialSurcharge;
-    
-    const items = [
-      { description: `Raw Material Sourcing (${structureLabel})`, cost: Math.round(subtotal * 0.45) },
-      { description: `Precision Shop Fabrication & Welds`, cost: Math.round(subtotal * 0.35) },
-      { description: `Finish Coating (${steelGrade === 'standard' ? 'Structural Primer' : steelGrade === 'galvanized' ? 'Hot-dip Galvanizing' : 'Polished finish'})`, cost: Math.round(subtotal * 0.20) },
-    ];
-
-    if (needsInstallation) {
-      const installCost = Math.round(subtotal * 0.15 + 2500);
-      items.push({ description: 'On-site Structural Rigging & Fasteners', cost: installCost });
-      subtotal += installCost;
-    }
-
-    const vat = Math.round(subtotal * 0.15);
-    const total = subtotal + vat;
-
-    return { subtotal, vat, total, items };
-  };
-
-  const { subtotal, vat, total, items } = calculateEstimate();
-
-  const handleExportEstimate = () => {
-    const structLabels: Record<string, string> = {
-      carport_premium: 'Premium Tensile Carport',
-      carport_standard: 'Standard Carport',
-      balustrades: 'Balustrades',
-      staircase: 'Custom Staircase Frame',
-      warehouse_mesh: 'Warehouse Security Mesh',
-    };
-
-    setContactPrefill({
-      division: 'engineering',
-      service: `${structLabels[structureType]} Sizing Subevaluation`,
-      message: `Hi Travis Engineering, I used your web estimator and built a custom specification:\n- Structure: ${structLabels[structureType]}\n- Dimensions: ${lengthMetres}m long ${structureType !== 'balustrades' && structureType !== 'staircase' ? `x ${widthMetres}m wide` : ''}\n- Steel Grade: ${steelGrade === 'stainless_304' ? 'Stainless 304' : steelGrade === 'galvanized' ? 'Galvanized' : 'Standard Prime'}\n- Installation required: ${needsInstallation ? 'Yes' : 'No'}\n- Projected budget bracket: R${total.toLocaleString('en-ZA')}`,
-      budget: `R${Math.round(total / 1000) * 1000}`,
-    });
-    setActiveSection('contact');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   return (
     <div className="mx-auto max-w-7xl px-6 py-16 md:py-24 space-y-24 bg-[#F5F7FA]">
       {/* Detail Header Banner */}
@@ -114,15 +38,6 @@ export default function EngineeringSection({ setActiveSection, setContactPrefill
               id="engineering-hero-quote-btn"
             >
               Request Engineering Quote
-            </button>
-            <button
-              onClick={() => {
-                const element = document.getElementById('engineering-calculator');
-                if (element) element.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="px-6 py-3.5 border-2 border-[#002B6B] bg-white text-[#002B6B] font-sans text-xs font-bold tracking-widest uppercase rounded-full shadow-sm hover:bg-neutral-50 active:scale-95 transition-all text-center cursor-pointer"
-            >
-              Cost Calculator
             </button>
           </div>
         </div>
@@ -213,181 +128,6 @@ export default function EngineeringSection({ setActiveSection, setContactPrefill
               </div>
             );
           })}
-        </div>
-      </section>
-
-      {/* Interactive Sizing Cost Estimator Tool */}
-      <section className="border border-gray-200 bg-white rounded-3xl overflow-hidden shadow-sm" id="engineering-calculator">
-        <div className="grid grid-cols-1 lg:grid-cols-12">
-          {/* Controls Form */}
-          <div className="lg:col-span-7 p-8 md:p-12 space-y-8 bg-[#F5F7FA] text-gray-800">
-            <div className="space-y-2">
-              <span className="font-mono text-[9px] font-bold text-[#0A4DBF] tracking-wider uppercase border border-gray-200 px-2.5 py-1 rounded bg-white">
-                INTERACTIVE COST PLANNER
-              </span>
-              <h2 className="font-serif-georgia text-2xl text-[#002B6B] tracking-tight font-medium mt-1">
-                Engineering Subevaluation Estimator
-              </h2>
-              <p className="font-sans text-xs text-gray-600 leading-normal font-light">
-                Get an instant estimated cost range in ZAR for raw materials and shop fabrications. Configure your spec details below.
-              </p>
-            </div>
-
-            <div className="space-y-6">
-              {/* Structure selection */}
-              <div className="space-y-2.5">
-                <label className="font-sans text-xs font-bold text-[#002B6B] uppercase tracking-wider block">Structure Type</label>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-                  {[
-                    { id: 'carport_premium', label: 'Premium Membrane Carport' },
-                    { id: 'carport_standard', label: 'Standard Sheet metal' },
-                    { id: 'balustrades', label: 'Heavy Balustrades (m)' },
-                    { id: 'staircase', label: 'Staircase Frame (m)' },
-                    { id: 'warehouse_mesh', label: 'Warehouse Mesh Wall' },
-                  ].map((st) => (
-                    <button
-                      key={st.id}
-                      onClick={() => {
-                        setStructureType(st.id as any);
-                        if (st.id === 'balustrades' || st.id === 'staircase') {
-                          setWidthMetres(1);
-                        } else if (widthMetres === 1) {
-                          setWidthMetres(3);
-                        }
-                      }}
-                      className={`text-left p-3 rounded-lg border text-xs font-semibold select-none transition-all duration-150 cursor-pointer ${
-                        structureType === st.id
-                          ? 'bg-[#002B6B] text-white border-[#002B6B]'
-                          : 'bg-white border-gray-200 text-[#002B6B] hover:border-[#0A4DBF]'
-                      }`}
-                    >
-                      {st.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Dimension Controls */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="space-y-2.5">
-                  <label className="font-sans text-xs font-bold text-[#002B6B] uppercase tracking-wider flex justify-between select-none">
-                    <span>{structureType === 'balustrades' || structureType === 'staircase' ? 'Linear Length Required' : 'Length'}</span>
-                    <span className="text-[#0A4DBF] font-mono text-xs font-bold">{lengthMetres} Metres</span>
-                  </label>
-                  <input
-                    type="range"
-                    min="2"
-                    max={structureType === 'balustrades' ? "50" : "15"}
-                    step="1"
-                    value={lengthMetres}
-                    onChange={(e) => setLengthMetres(Number(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#0A4DBF]"
-                  />
-                  <p className="font-mono text-[10px] text-gray-500">Min: 2m · Max: {structureType === 'balustrades' ? "50m" : "15m"}</p>
-                </div>
-
-                {/* Show width only for non-linear structures */}
-                {structureType !== 'balustrades' && structureType !== 'staircase' && (
-                  <div className="space-y-2.5">
-                    <label className="font-sans text-xs font-bold text-[#002B6B] uppercase tracking-wider flex justify-between select-none">
-                      <span>Width Span</span>
-                      <span className="text-[#0A4DBF] font-mono text-xs font-bold">{widthMetres} Metres</span>
-                    </label>
-                    <input
-                      type="range"
-                      min="2"
-                      max="10"
-                      step="1"
-                      value={widthMetres}
-                      onChange={(e) => setWidthMetres(Number(e.target.value))}
-                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#0A4DBF]"
-                    />
-                    <p className="font-mono text-[10px] text-gray-500 font-light">Min: 2m · Max: 10m</p>
-                  </div>
-                )}
-              </div>
-
-              {/* Steel Grades and Finishes */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="space-y-2.5">
-                  <label className="font-sans text-xs font-bold text-[#002B6B] uppercase tracking-wider block">Steel Material Spec</label>
-                  <select
-                    value={steelGrade}
-                    onChange={(e: any) => setSteelGrade(e.target.value)}
-                    className="w-full rounded-lg bg-white border border-gray-200 text-xs px-3.5 py-2.5 text-gray-800 font-medium focus:ring-1 focus:ring-[#0A4DBF] focus:outline-none"
-                  >
-                    <option value="standard">Standard Structural Mild Steel (Red Oxide Primed)</option>
-                    <option value="galvanized">Hot-dip Galvanized Durasteel (Corrosion Proof)</option>
-                    <option value="stainless_304">Premium Stainless Steel Grade 304</option>
-                  </select>
-                </div>
-
-                <div className="space-y-2.5">
-                  <label className="font-sans text-xs font-bold text-[#002B6B] uppercase tracking-wider block">Site Handling option</label>
-                  <div className="flex items-center h-11 border border-gray-200 rounded-lg bg-white px-4">
-                    <input
-                      type="checkbox"
-                      id="needsInstallation"
-                      checked={needsInstallation}
-                      onChange={(e) => setNeedsInstallation(e.target.checked)}
-                      className="rounded h-4.5 w-4.5 cursor-pointer accent-[#0A4DBF]"
-                    />
-                    <label htmlFor="needsInstallation" className="ml-3 font-sans text-xs text-gray-700 font-semibold cursor-pointer select-none">
-                      Include On-Site Rigging / Fitting
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Pricing Estimation results with Dark Navy container and premium text */}
-          <div className="lg:col-span-5 bg-[#001A4D] text-white p-8 md:p-12 flex flex-col justify-between border-t lg:border-t-0 lg:border-l border-white/10 relative">
-            <div className="space-y-8">
-              <div className="pb-4 border-b border-white/10">
-                <h3 className="font-mono text-[9px] font-bold text-[#D4A44A] tracking-wider uppercase">ESTIMATION REVIEW</h3>
-                <p className="font-sans text-sm text-white/70 mt-1 font-medium">Bespoke Fabrication Pricing</p>
-              </div>
-
-              {/* Primary Price output */}
-              <div className="space-y-1 select-all">
-                <p className="font-sans text-xs text-white/60 font-semibold uppercase tracking-wider">Projected Cost (Total Incl. VAT)</p>
-                <p className="font-sans text-3xl sm:text-4xl font-black text-white tracking-tight">
-                  R {total.toLocaleString('en-ZA')}
-                </p>
-                <p className="font-mono text-[10px] text-white/50">Calculated under Durban supplier metal indices.</p>
-              </div>
-
-              {/* Itemized list breakdown */}
-              <div className="space-y-3.5 bg-white/5 p-4.5 rounded-xl border border-white/10">
-                <p className="font-sans text-xs text-[#D4A44A] font-bold tracking-wider uppercase">Itemized Budget Projections</p>
-                <div className="space-y-2">
-                  {items.map((it, idx) => (
-                    <div key={idx} className="flex justify-between items-center text-xs">
-                      <span className="text-white/75 truncate max-w-[210px]">{it.description}</span>
-                      <span className="font-mono text-white font-bold">R {it.cost.toLocaleString('en-ZA')}</span>
-                    </div>
-                  ))}
-                  <div className="h-px bg-white/10 my-2" />
-                  <div className="flex justify-between items-center text-xs text-white/65">
-                    <span>Estimated South African VAT (15%)</span>
-                    <span className="font-mono font-bold">R {vat.toLocaleString('en-ZA')}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="pt-8 block">
-              <button
-                onClick={handleExportEstimate}
-                className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-[#D4A44A] text-white font-sans text-xs font-bold tracking-widest uppercase rounded-full hover:bg-[#D4A44A]/90 transition-all duration-150 focus:outline-none cursor-pointer border-none shadow-lg text-center"
-                id="engineering-export-estimate-btn"
-              >
-                <FileSpreadsheet className="h-4.5 w-4.5 text-white" />
-                Apply Parameters to Contact Form
-              </button>
-            </div>
-          </div>
         </div>
       </section>
     </div>
